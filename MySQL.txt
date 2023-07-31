@@ -1,0 +1,96 @@
+drop database if  exists парикмахерская;
+create database if not exists парикмахерская;
+use парикмахерская;
+
+create table if not exists клиенты
+(
+id int primary key auto_increment,
+фамилия varchar(50) not null,
+имя varchar(15) not null,
+телефон varchar(30) not null,
+дата_регистрации datetime not null 
+);
+
+create table if not exists парикмахеры
+(
+id int primary key auto_increment,
+фамилия varchar(50) not null,
+имя varchar(20) not null,
+график_работы varchar(70) not null,
+телефон varchar(10) not null
+);
+
+create table if not exists любимые_прически (
+user_id int,
+master_id int,
+primary key (user_id, master_id),
+foreign key ( user_id) references клиенты (id)
+on delete cascade on update cascade
+);
+
+alter table любимые_прически
+add constraint order_bd
+foreign key (user_id) references  клиенты(id)
+on delete cascade on update cascade;
+
+
+create table if not exists производители
+(
+id int primary key auto_increment,
+название varchar(50) not null,
+адрес varchar(70) not null,
+дата_регистрации varchar(10) not null);
+
+
+
+create table if not exists материалы
+(
+id int primary key auto_increment,
+заказы int not null,
+название varchar(70) not null,
+цена varchar(10) not null,
+скидка varchar(10) not null,
+foreign key ( заказы) references производители (id)
+on delete cascade on update cascade
+);
+
+create table if not exists парикмахеры_материалы (
+parik_id int,
+material_id int,
+primary key (parik_id, material_id),
+foreign key ( parik_id) references парикмахеры (id)
+on delete cascade on update cascade,
+foreign key ( material_id) references материалы (id)
+on delete cascade on update cascade
+);
+
+create table if not exists используемые_материалы (
+user_id int,
+material_id int,
+primary key (user_id, material_id),
+foreign key ( user_id) references клиенты (id)
+on delete cascade on update cascade,
+foreign key ( material_id) references материалы (id)
+on delete cascade on update cascade
+);
+
+create table if not exists услуги
+(
+id int primary key auto_increment,
+user_id int not null,
+сумма varchar(70) not null,
+скидка varchar(10) not null,
+дата datetime not null,
+foreign key ( user_id) references клиенты (id)
+on delete cascade on update cascade
+);
+
+create table if not exists услуги_материалы (
+uslugi_id int,
+material_id int,
+primary key (uslugi_id, material_id),
+foreign key ( uslugi_id) references услуги (id)
+on delete cascade on update cascade,
+foreign key ( material_id) references материалы (id)
+on delete cascade on update cascade
+);
